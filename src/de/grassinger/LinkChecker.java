@@ -1,67 +1,52 @@
 package de.grassinger;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class LinkChecker {
 
-	public boolean checkLink(String url) {
-		// TODO
-		return false;
-	}
+	public static String[] checkAllLinks(String[] urls) {
 
-	public String[] checkAllLinks(String[] urls) {
-		String[] links;
-		List<String> obsoleteLinks;
-		List<CheckLink> threads;
+		// list with obsolete links which is returned by this function
+		LinkedList<String> obsoleteLinks = new LinkedList<String>();
 
-		links = urls;
-
-		obsoleteLinks = (List<String>) Collections.synchronizedCollection(new LinkedList<String>());
-		threads = new ArrayList<CheckLink>(urls.length);
-
+		// list of threads, every link is checked in an extra thread
+		List<CheckLink> threads = new ArrayList<CheckLink>(urls.length);
+		
+		// open a new thread for every thread
 		for (int i = 0; i < urls.length; i++) {
 			CheckLink thread = new CheckLink(urls[i]);
 			thread.start();
 			threads.add(thread);
 		}
 
-		for (int i = 0; i < threads.size(); i++) {
-			if (threads.get(i).isObsolete()) {
-				obsoleteLinks.add(threads.get(i).getURL());
+		
+		for (CheckLink thread : threads) {
+			
+			// wait till every thread is finished
+			try {
+				thread.join();
+
+			} catch (InterruptedException e) {
+				// ignore exceptions
+				//e.printStackTrace();
+			}
+			
+			// get the obsolete parameter from the thread
+			if (thread.isObsolete()) {
+				// add the obsolete links to the obsolete list
+				obsoleteLinks.add(thread.getURL());
 			}
 		}
 
-		return  obsoleteLinks.toArray(new String[0]);
-	}
-
-	private class CheckLink extends Thread {
-
-		private String url;
-		private boolean isObsoleteVar = false;
-
-		public CheckLink(String url) {
-			this.url = url;
-		}
-
-		public boolean isObsolete() {
-
-			return isObsoleteVar;
-		}
-
-		public String getURL() {
-			return url;
-		}
-
-		@Override
-		public void run() {
-			// TODO implement this method
-			
-			isObsoleteVar = true;
-
-		}
+		// return the obsolete links
+		return obsoleteLinks.toArray(new String[0]);
 	}
 
 }

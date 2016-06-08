@@ -15,11 +15,15 @@ public class HTMLDownloader {
 		// Create URL from input
 		URL myurl = new URL(inputURL);
 		// Open connection
-		HttpsURLConnection con = (HttpsURLConnection) myurl.openConnection();
+		HttpURLConnection con = (HttpURLConnection) myurl.openConnection();
 		// Set property that this is a wikipedia bot
 		con.setRequestProperty(" User - Agent ", " LinkTester /0.1 ( grassing@fim.uni-passau.de ) Java /1.8.0 ");
 
+		// set timeout for connecting and reading
+		con.setConnectTimeout(1000);
+		con.setReadTimeout(2000);
 		con.connect();
+		
 		if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
 			return "";
 		}
@@ -35,6 +39,7 @@ public class HTMLDownloader {
 		}
 		in.close();
 
+		// return the source code
 		return sb.toString();
 
 	}
