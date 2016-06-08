@@ -39,13 +39,13 @@ public class WikipediaLinkChecker {
 			htmlSource = HTMLDownloader.downloadSource(inputURL);
 		} catch (Exception e) {
 			System.err.println("Der Link konnte nicht ge\u00f6ffnet werden!");
-			System.exit(404);
-			//e.printStackTrace();
+			System.exit(1);
+			// e.printStackTrace();
 		}
-		
+
 		// get the links from the HTML source code
 		String[] links = LinkExtractor.getLinks(htmlSource);
-		
+
 		// check the links if they work
 		String[] obsoleteLinks = LinkChecker.checkAllLinks(links);
 

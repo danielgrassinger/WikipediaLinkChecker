@@ -18,7 +18,7 @@ public class LinkChecker {
 
 		// list of threads, every link is checked in an extra thread
 		List<CheckLink> threads = new ArrayList<CheckLink>(urls.length);
-		
+
 		// open a new thread for every thread
 		for (int i = 0; i < urls.length; i++) {
 			CheckLink thread = new CheckLink(urls[i]);
@@ -26,18 +26,17 @@ public class LinkChecker {
 			threads.add(thread);
 		}
 
-		
 		for (CheckLink thread : threads) {
-			
+
 			// wait till every thread is finished
 			try {
 				thread.join();
 
 			} catch (InterruptedException e) {
 				// ignore exceptions
-				//e.printStackTrace();
+				// e.printStackTrace();
 			}
-			
+
 			// get the obsolete parameter from the thread
 			if (thread.isObsolete()) {
 				// add the obsolete links to the obsolete list

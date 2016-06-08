@@ -23,7 +23,7 @@ public class HTMLDownloader {
 		con.setConnectTimeout(1000);
 		con.setReadTimeout(2000);
 		con.connect();
-		
+
 		if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
 			return "";
 		}
